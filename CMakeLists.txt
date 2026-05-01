@@ -10,6 +10,8 @@ add_subdirectory(vendored/SDL_ttf EXCLUDE_FROM_ALL)
 add_subdirectory(vendored/SDL_mixer EXCLUDE_FROM_ALL)
 
 add_executable(BioSimulation src/main.cpp
+        include/grid/Grid.h
+        src/grid/Grid.cpp
 )
 
 target_include_directories(BioSimulation PRIVATE
