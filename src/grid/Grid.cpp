@@ -6,7 +6,7 @@ Grid::Grid(float x, float y, float columns, float rows, float cellSize, GridStyl
     : x(x), y(y), columns(columns), rows(rows), cellSize(cellSize),
     gridRect{x, y, columns * cellSize, rows * cellSize},
     cursor{gridRect.x + floorf(columns/2)*cellSize,gridRect.y + floorf(rows/2)*cellSize,cellSize, cellSize},
-    cursorGhost{cursor.x, cursor.y,cellSize,cellSize},
+    cursorGhost{-100, -100,cellSize,cellSize},
     style(style),
     cursorPoints{}
     {};
@@ -19,6 +19,9 @@ void Grid::handleEvent (const SDL_Event &event) {
             if (SDL_PointInRectFloat(&point, &gridRect)) {
                 cursorGhost.x = gridRect.x + floorf((point.x - gridRect.x)/cellSize)*cellSize;
                 cursorGhost.y = gridRect.y + floorf((point.y - gridRect.y)/cellSize)*cellSize;
+            } else {
+                cursorGhost.x = -100;
+                cursorGhost.y = -100;
             }
             break;
         case SDL_EVENT_MOUSE_BUTTON_DOWN:
@@ -41,12 +44,25 @@ void Grid::render (SDL_Renderer *renderer) const {
 
     //lines
     SDL_SetRenderDrawColor(renderer, style.gridLineColor.r, style.gridLineColor.g, style.gridLineColor.b, style.gridLineColor.a);
-    for (float loopX = gridRect.x; loopX < (columns*cellSize) + gridRect.x + static_cast<float>(cellSize); loopX += static_cast<float>(cellSize)) {
-        SDL_RenderLine(renderer,loopX,gridRect.y,loopX,(rows*cellSize) + gridRect.y);
+    for (int column = 0; column <= static_cast<int>(columns); ++column) {
+        const float lineX = gridRect.x + static_cast<float>(column) * cellSize;
+        SDL_RenderLine(
+            renderer,
+            lineX,
+            gridRect.y,
+            lineX,
+            gridRect.y + gridRect.h
+        );
     }
-    SDL_SetRenderDrawColor(renderer, style.gridLineColor.r, style.gridLineColor.g, style.gridLineColor.b, style.gridLineColor.a);
-    for (float loopY = gridRect.y; loopY < (rows*cellSize) + gridRect.y + static_cast<float>(cellSize); loopY += static_cast<float>(cellSize)) {
-        SDL_RenderLine(renderer,gridRect.x,loopY,(columns*cellSize) + gridRect.x,loopY);
+    for (int row = 0; row <= static_cast<int>(rows); ++row) {
+        const float lineY = gridRect.y + static_cast<float>(row) * cellSize;
+        SDL_RenderLine(
+            renderer,
+            gridRect.x,
+            lineY,
+            gridRect.x + gridRect.w,
+            lineY
+        );
     }
 
     //ghost cursor and grid cursor
@@ -65,3 +81,22 @@ void Grid::updateCursorPoints () {
     cursorPoints[4] = {cursor.x , cursor.y};
 }
 
+float Grid::getColumns() const {
+    return columns;
+}
+
+float Grid::getRows() const {
+    return rows;
+}
+
+float Grid::getGridX() const {
+    return gridRect.x;
+}
+
+float Grid::getGridY() const {
+    return gridRect.y;
+}
+
+float Grid::getCellSize() const {
+    return cellSize;
+}

@@ -28,5 +28,11 @@ class Grid {
 
     void handleEvent (const SDL_Event &event);
     void render (SDL_Renderer* renderer) const;
+
+    [[nodiscard]] float getColumns() const;
+    [[nodiscard]] float getRows() const;
+    [[nodiscard]] float getGridX() const;
+    [[nodiscard]] float getGridY() const;
+    [[nodiscard]] float getCellSize() const;
 };
 
