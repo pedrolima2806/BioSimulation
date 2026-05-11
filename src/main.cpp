@@ -76,16 +76,19 @@ int main() {
 
     //grid initialization
     float gridX = 50, gridY = 50;
-    float columns = 80, rows = 50;
-    float cellSize = 15;
+    float columns = 60, rows = 30;
+    float cellSize = 20;
     Grid grid = {gridX, gridY, columns, rows, cellSize, gridStyle};
 
     //Entity
+    int level1Quantity = 10, level2Quantity = 7, level3Quantity = 5, level4Quantity = 3;
+    int visionRange = 9;
+
     Entities entities(&grid, entitiesStyle);
-    entities.spawnEntity(&grid, 1);
-    entities.spawnEntity(&grid, 2);
-    entities.spawnEntity(&grid, 3);
-    entities.spawnEntity(&grid, 4);
+    entities.spawnEntities(&grid, 1, level1Quantity, visionRange);
+    entities.spawnEntities(&grid, 2, level2Quantity, visionRange);
+    entities.spawnEntities(&grid, 3, level3Quantity, visionRange);
+    entities.spawnEntities(&grid, 4, level4Quantity, visionRange);
 
 
     //Loop cycle
@@ -102,7 +105,6 @@ int main() {
             grid.handleEvent(event);
         }
         //outside handleEvent
-
         //deltaMs
         auto currentTime = std::chrono::steady_clock::now();
         double deltaMs = std::chrono::duration<double, std::milli>(currentTime - previousTime).count();
